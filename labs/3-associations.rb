@@ -17,8 +17,37 @@ Activity.destroy_all
 # 1. insert 3 rows in the activities table with relationships to
 # a single salesperson and 2 different contacts
 
+
+# Salesperson
+salesFirst = "Ben"
+salesLast = "Block"
+benID = Salesperson.find_by({"first_name" => salesFirst, "last_name" => salesLast})["id"]
+
+# Contact IDs
+timID = Contact.find_by({"first_name" => "Tim", "last_name" => "Cook"})["id"]
+beffID = Contact.find_by({"first_name" => "Beff", "last_name" => "Jezos"})["id"]
+
+activity = Activity.new
+activity["salesperson_id"] = benID
+activity["contact_id"] = timID
+activity["note"] = "They dapped each other up"
+activity.save
+
+activity = Activity.new
+activity["salesperson_id"] = benID
+activity["contact_id"] = beffID
+activity["note"] = "Jezos asked to swap pants"
+activity.save
+
+
+
+
+
+
 # 2. Display all the activities between the salesperson used above
 # and one of the contacts (sample output below):
+
+puts "Activities between #{salesFirst} and Tim Cook:"
 
 # ---------------------------------
 # Activities between Ben and Tim Cook:
@@ -28,6 +57,23 @@ Activity.destroy_all
 # CHALLENGE:
 # 3. Similar to above, but display all of the activities for the salesperson
 # across all contacts (sample output below):
+
+puts "#{salesFirst}'s Activities:"
+
+for activity in Activity.all
+    salesID = activity["salesperson_id"]
+    contactID = activity["contact_id"]
+
+    salesPerson = Salesperson.find_by({"id" => salesID})
+    contact = Contact.find_by({"id" => contactID})
+
+    contactFirst = contact["first_name"]
+    contactLast = contact["last_name"]
+
+    if salesPerson["first_name"] == "Ben" && salesPerson["last_name"] == "Block"
+        puts "#{contactFirst} #{contactLast} - #{activity["note"]}"
+    end
+end
 
 # ---------------------------------
 # Ben's Activities:
